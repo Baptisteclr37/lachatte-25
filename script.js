@@ -1,17 +1,18 @@
+const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSuc-XJn1YmTCl-5WtrYeOKBS8nfTnRsFCfeNMRvzJcbavfGIX9SUSQdlZnVNPQtapcgr2m4tAwYznB/pub?gid=363948896&single=true&output=csv';
 
-const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSuc-XJn1YmTCl-5WtrYeOKBS8nfTnRsFCfeNMRvzJcbavfGIX9SUSQdlZnVNPQtapcgr2m4tAwYznB/pub?gid=363948896&single=true&output=csv';
+// Passage par un proxy CORS (AllOrigins)
+const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(csvUrl);
 
-async function fetchAndDisplay() {
-  const content = document.getElementById('content');
-  try {
-    const response = await fetch(url);
-    if (!response.ok) throw new Error('Erreur réseau');
-    const csv = await response.text();
-    content.textContent = csv.split('\n').slice(0, 10).join('\n');
-  } catch (error) {
-    content.textContent = 'Erreur de chargement : ' + error.message;
-    console.error(error);
-  }
-}
-
-fetchAndDisplay();
+fetch(proxyUrl)
+.then(response => {
+if (!response.ok) throw new Error("Erreur réseau");
+return response.text();
+})
+.then(csvText => {
+document.getElementById('output').textContent = csvText;
+console.log(csvText);
+})
+.catch(err => {
+document.getElementById('output').textContent = 'Erreur: ' + err.message;
+console.error(err);
+});
